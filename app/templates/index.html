@@ -1,0 +1,172 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANM_LSIR - Restore Your Surgical Image Here</title>
+{#    <link rel="stylesheet" href="static/css/style.css">#}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}">
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">ANM_LSIR</div>
+            <ul class="menu">
+                {# 功能页面，包括图片的恢复 #}
+                <li><a href="">主页</a></li>
+                {# 关于本项目的介绍 #}
+                <li><a href="#">关于我们的项目</a></li>
+                <li><a href="#">联系我们</a></li>
+            </ul>
+            <div class="buttons">
+{#                登录#}
+{#                <button id="loginButton">Log In</button>#}
+                <button id="loginButton">{{ login }}</button>
+{#                <button>Get Started</button>#}
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1>输入待还原的图片</h1>
+            <h2>Input the Surgical Image Here</h2>
+            <p>   </p>
+            <div class="cta-buttons">
+                <form id="uploadForm" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- 隐藏文件输入框 -->
+                    <input type="file" id="id_image" name="image" style="display:none;" />
+                    <button type="button" id="uploadButton">导入图片</button>
+{#                    <input type="submit" value="导入图片">#}
+                    <button type="button" id="restorationButton">恢复图片</button>
+                </form>
+
+            </div>
+        </section>
+
+        <section class="profiles">
+            {# 输入的图片#}
+            <div class="profile">
+                <span>输入的图片</span>
+                <img id="uploadedImage" src="" alt="Waiter" style="visibility: hidden;">
+            </div>
+
+            <div class="profile">
+                <span>还原的图片</span>
+                <img id="restoredImage" src="" alt="Assistant" style="visibility: hidden;">
+            </div>
+{#            <div class="profile">#}
+{#                <img src="path/to/cleaner.jpg" alt="Cleaner">#}
+{#                <span>Cleaner</span>#}
+{#            </div>#}
+{#            <div class="profile">#}
+{#                <img src="path/to/nurse.jpg" alt="Nurse">#}
+{#                <span>Nurse</span>#}
+{#            </div>#}
+        </section>
+
+{#        <section class="partners">#}
+{#            <img src="path/to/the-telegraph.png" alt="The Telegraph">#}
+{#            <img src="path/to/warner-bros-discovery.png" alt="Warner Bros Discovery">#}
+{#            <img src="path/to/net-a-porter.png" alt="NET-A-PORTER">#}
+{#            <img src="path/to/brandstudio.png" alt="BrandStudio">#}
+{#            <img src="path/to/highsnobiety.png" alt="HIGHSNOBIETY">#}
+{#        </section>#}
+    </main>
+</body>
+</html>
+
+<script>
+    var image_path
+    $(document).ready(function(){
+        $('#loginButton').click(function(){
+            {#alert('Login button clicked!');#}
+            {#跳转到登录页面#}
+            window.location.href = "{% url 'login' %}";
+        });
+        {#// 触发文件选择对话框#}
+    {#    document.getElementById('uploadButton').addEventListener('click', function() {#}
+            {#// 触发文件选择对话框#}
+    {#        document.getElementById('id_image').click();#}
+    {#    });#}
+        {#// 监听文件选择变化并提交表单#}
+    {#    document.getElementById('id_image').addEventListener('change', function(event) {#}
+    {#        const fileInput = event.target;#}
+    {#        if (fileInput.files.length > 0) {#}
+    {#            document.getElementById('uploadForm').submit(); // 提交表单#}
+    {#        }#}
+    {#    });#}
+    {#    // 触发文件选择对话框#}
+        $('#uploadButton').on('click', function() {
+            $('#id_image').click();
+        });
+
+        {#// 监听文件选择变化并提交表单#}
+        $('#id_image').on('change', function(event) {
+            const fileInput = event.target;
+            if (fileInput.files.length > 0) {
+                const formData = new FormData();
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                formData.append('image', fileInput.files[0]);
+
+                $.ajax({
+                    url: '{% url "upload" %}',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        console.log(response.image_path)
+                        alert('图片上传成功！');
+                        // 设置图片的 src 属性
+                        image_path=response.image_path
+                        $('#uploadedImage').attr('src', response.image_path);
+
+                        // 设置图片为可见
+                        $('#uploadedImage').css('visibility', 'visible');
+                    },
+                    error: function(xhr, status, error) {
+                        alert('图片上传失败，请重试！');
+                    }
+                });
+            } else {
+                alert('请选择一个文件！');
+            }
+        });
+        $('#restorationButton').click(function(){
+            {#alert('Login button clicked!');#}
+            {#恢复图片#}
+            {#先得到图片的地址#}
+            console.log(image_path)
+            {#然后把这个图片的地址传回后端进行处理#}
+            $.ajax({
+                url: '{% url "restore" %}', // 替换为你的实际URL
+                type: 'GET',
+                data: {
+                    param1: image_path,
+                },
+                success: function(response) {
+                    console.log('请求成功:', response);
+                    alert('图片恢复成功！');
+                    // 设置图片的 src 属性
+                    image_path=response.restored_image_path
+                    $('#restoredImage').attr('src', response.image_path);
+
+                    // 设置图片为可见
+                    $('#restoredImage').css('visibility', 'visible');
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('请求失败:', error);
+                    alert('图片恢复失败！');
+                }
+            });
+
+        });
+
+    });
+</script>

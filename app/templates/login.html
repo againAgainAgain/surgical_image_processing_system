@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录</title>
+    <link rel="stylesheet" href="{% static 'css/style_login.css' %}">
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}">
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <h2>用户登录</h2>
+        <form method="post" action="{% url 'tologin' %}">
+        <form id="loginForm" method="post">
+            <label for="username">用户名</label>
+            <input type="text" id="username" name="username" placeholder="请输入用户名">
+
+            <label for="password">密码</label>
+            <input type="password" id="password" name="password" placeholder="请输入密码">
+
+            <div class="captcha">
+                <label for="captcha">图片验证码</label>
+                <input type="text" id="captcha" name="captcha" placeholder="请输入验证码" class="captcha-input">
+                <input type="hidden" id="captcha_key" name="captcha_key" value="{{ captcha_key }}">
+                <img src="{{ captcha_image_url }}" alt="验证码">
+                <span style="color: red;display: none" class="captcha-image">验证码错误</span>
+            </div>
+
+            <button type="submit">登 录</button>
+        </form>
+    </div>
+</body>
+<script>
+$(document).ready(function() {
+    $('#loginForm').on('submit', function(event) {
+        event.preventDefault(); // 阻止表单的默认提交行为
+
+        var formData = $(this).serialize(); // 序列化表单数据
+
+        $.ajax({
+            url: "{% url 'tologin' %}", // 后端处理登录请求的URL
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.status === '200') {
+                    // 登录成功，跳转到指定页面
+                    alert("success")
+                    window.location.href = response.redirect_url || '/';
+                } else {
+                    // 登录失败，显示错误信息
+                    if (response.errors && response.errors.captcha) {
+                        $('.captcha-image').text(response.errors.captcha[0]).show();
+                    } else if (response.errors && response.errors.non_field_errors) {
+                        alert(response.errors.non_field_errors[0]);
+                    } else {
+                        alert('登录失败，请检查输入信息。');
+                    }
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX 请求出错:', error);
+                alert('服务器错误，请稍后再试。');
+            }
+        });
+    });
+});
+</script>
+</html>

@@ -1,0 +1,165 @@
+/* Basic Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+header {
+    /*background-color: #333;*/
+    /*color: white;*/
+    background-color: white;
+    color: #004d00;
+    padding: 1rem 0;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    /*color: #4caf50;*/
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.menu {
+    list-style: none;
+    display: flex;
+}
+
+.menu li {
+    margin-left: 1rem;
+}
+
+.menu li a {
+    /*color: white;*/
+    color: #004d00;
+    text-decoration: none;
+}
+
+.buttons button {
+    background-color: #004d00;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin-left: 1rem;
+    cursor: pointer;
+}
+
+.hero {
+    text-align: center;
+    padding: 2rem;
+    background-color: #004d00;
+    color: white;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    /*margin-bottom: 0.5rem;*/
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+}
+
+.hero h2 {
+    font-size: 2rem;
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+}
+
+.hero p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.cta-buttons button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    margin: 0 0.5rem;
+    cursor: pointer;
+}
+
+.profiles {
+    display: flex;
+    justify-content: space-around;
+    padding: 2rem;
+}
+
+.profile img {
+    margin-top:20px;
+    width: 200px;
+    height: 200px;
+    /*border-radius: 50%;*/
+}
+
+.profile span {
+    display: block;
+    text-align: center;
+    margin-top: 0.5rem;
+    background-color: #4caf50;
+    color: white;
+    padding: 0.2rem;
+    border-radius: 5px;
+}
+
+.partners img {
+    width: 100px;
+    margin: 0 1rem;
+}
+
+/* cta-buttons 容器 */
+/* 确保.cta-buttons 容器使用flex布局 */
+.cta-buttons {
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    gap: 10px; /* 按钮之间的间距 */
+    margin-top: 20px; /* 上外边距 */
+}
+
+/* 确保按钮具有相同的高度和适当的内边距 */
+.cta-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    /*background-color: #007bff;*/
+    background-color: #4caf50;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 按钮悬停效果 */
+.cta-buttons button:hover {
+    background-color: #0056b3;
+}
+
+/* 可选：调整上传按钮以触发文件选择 */
+#uploadButton {
+    position: relative;
+    overflow: hidden;
+}
+
+#uploadButton input[type="file"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
